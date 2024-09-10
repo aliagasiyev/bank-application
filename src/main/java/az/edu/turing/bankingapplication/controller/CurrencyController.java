@@ -20,7 +20,6 @@ public class CurrencyController {
     public String getCurrencyRates() throws JsonProcessingException {
         String ratesJson = currencyRateFetcher.fetchRates();
 
-        // Konsola yazdırın
         System.out.println("Currency rates: " + ratesJson);
 
         return ratesJson;
