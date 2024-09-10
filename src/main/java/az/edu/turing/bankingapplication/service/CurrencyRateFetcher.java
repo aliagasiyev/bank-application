@@ -51,30 +51,24 @@ public class CurrencyRateFetcher {
 
     private void refreshRates() {
         try {
-            // JSON məzmununu əldə edin
             String jsonResponse = restTemplate.getForObject(url, String.class);
 
             if (jsonResponse != null) {
-                // JSON məzmununu parse edin
                 JsonNode root = objectMapper.readTree(jsonResponse);
                 JsonNode rates = root.path("rates");
 
-                // İstədiyiniz valyuta məzənnələrini çıxarın
                 double usdRate = rates.path("USD").asDouble();
                 double eurRate = rates.path("EUR").asDouble();
                 double aznRate = rates.path("AZN").asDouble();
 
-                // 1 manatın USD və EUR-a görə dəyəri
                 double aznToUsd = aznRate / usdRate;
                 double aznToEur = aznRate / eurRate;
 
-                // JSON obyektini yaradın
                 cachedRates = objectMapper.createObjectNode();
                 cachedRates.put("AZN", 1);
                 cachedRates.put("USD", String.format("%.3f", aznToUsd));
                 cachedRates.put("EUR", String.format("%.3f", aznToEur));
 
-                // Keşin yenilənmə vaxtını qeyd edin
                 lastFetched = LocalDateTime.now();
             }
         } catch (Exception e) {
