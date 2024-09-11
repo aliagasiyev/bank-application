@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring") // Use "spring" instead of "users"
+@Mapper(componentModel = "spring") 
 public interface AccountMapper {
 
     @Mapping(target = "id", ignore = true)
