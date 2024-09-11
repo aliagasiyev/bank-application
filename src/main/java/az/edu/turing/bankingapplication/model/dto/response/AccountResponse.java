@@ -10,7 +10,7 @@ public record AccountResponse(
         String username,
         String password,
         String email,
-        AccountStatus accountStatus,
+        AccountStatus status,
         UserEntity user
 ) {
 }

@@ -19,7 +19,6 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final AccountService accountService;
 
     @PostMapping
     public ResponseEntity<Void> createUser(@Valid @RequestBody UserRequest userDto) {

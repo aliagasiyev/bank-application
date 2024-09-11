@@ -1,10 +1,8 @@
 package az.edu.turing.bankingapplication.domain.entity;
 
-import az.edu.turing.bankingapplication.enums.AccountStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 
 @Data
@@ -26,6 +24,6 @@ public class UserEntity {
     @Column(name = "is_enabled")
     private boolean enabled = true;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountEntity> accounts;
 }

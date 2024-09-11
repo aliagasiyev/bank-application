@@ -31,7 +31,7 @@ public class AccountEntity {
     private AccountStatus status;
 
     @Lob
-    @Column(name = "profile_photo")
+    @Column(name = "profile_photo", nullable = false)
     private byte[] profilePhoto;
 
     @ManyToOne
