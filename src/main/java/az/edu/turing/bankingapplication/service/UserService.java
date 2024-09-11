@@ -10,24 +10,26 @@ import az.edu.turing.bankingapplication.model.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     public void create(UserRequest userDto) {
         UserEntity userEntity = userMapper.toUserEntity(userDto);
-        userEntity.setStatus(AccountStatus.ACTIVATED);
+       // userEntity.setStatus(AccountStatus.ACTIVATED);
         userRepository.save(userEntity);
     }
 
     public List<UserResponse> getAll() {
         List<UserEntity> userEntities = userRepository.findAll();
-        return userMapper.listToUserDto(userEntities);
+        return Collections.singletonList(userMapper.toUserDto((UserEntity) userEntities));
     }
 
     public Optional<UserResponse> getById(Long id) {

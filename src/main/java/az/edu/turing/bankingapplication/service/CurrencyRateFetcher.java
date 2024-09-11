@@ -23,7 +23,7 @@ public class CurrencyRateFetcher {
     private ObjectNode cachedRates;
     private LocalDateTime lastFetched;
 
-    private static final long CACHE_DURATION_MINUTES = 1; 
+    private static final long CACHE_DURATION_MINUTES = 1; // Keşin yenilənmə müddəti
 
     public CurrencyRateFetcher(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
@@ -39,6 +39,7 @@ public class CurrencyRateFetcher {
         if (cachedRates == null || isCacheExpired()) {
             refreshRates();
         }
+        // JSON obyektini pretty print ilə qaytarın
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cachedRates);
     }
 
@@ -48,7 +49,6 @@ public class CurrencyRateFetcher {
 
     private void refreshRates() {
         try {
-
             String jsonResponse = restTemplate.getForObject(url, String.class);
 
             if (jsonResponse != null) {
