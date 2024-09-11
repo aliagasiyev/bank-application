@@ -2,7 +2,6 @@ package az.edu.turing.bankingapplication.service;
 
 import az.edu.turing.bankingapplication.domain.entity.UserEntity;
 import az.edu.turing.bankingapplication.domain.repository.UserRepository;
-import az.edu.turing.bankingapplication.enums.AccountStatus;
 import az.edu.turing.bankingapplication.exception.UserNotFoundException;
 import az.edu.turing.bankingapplication.mapper.config.UserMapper;
 import az.edu.turing.bankingapplication.model.dto.request.UserRequest;
@@ -16,20 +15,20 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     public void create(UserRequest userDto) {
         UserEntity userEntity = userMapper.toUserEntity(userDto);
-       // userEntity.setStatus(AccountStatus.ACTIVATED);
         userRepository.save(userEntity);
     }
 
     public List<UserResponse> getAll() {
         List<UserEntity> userEntities = userRepository.findAll();
-        return Collections.singletonList(userMapper.toUserDto((UserEntity) userEntities));
+        return userEntities.stream()
+                .map(userMapper::toUserDto)
+                .toList();
     }
 
     public Optional<UserResponse> getById(Long id) {

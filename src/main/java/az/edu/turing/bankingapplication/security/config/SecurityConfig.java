@@ -22,8 +22,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().authenticated() // all requests require authentication
                 )
-                .httpBasic(Customizer.withDefaults()) // new way to configure HTTP Basic Authentication
-                .csrf(AbstractHttpConfigurer::disable); // disable CSRF for simplicity in this example
+                .httpBasic(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
