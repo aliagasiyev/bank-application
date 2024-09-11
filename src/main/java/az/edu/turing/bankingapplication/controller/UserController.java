@@ -4,7 +4,6 @@ import az.edu.turing.bankingapplication.model.dto.request.UserRequest;
 import az.edu.turing.bankingapplication.model.dto.response.UserResponse;
 import az.edu.turing.bankingapplication.service.AccountService;
 import az.edu.turing.bankingapplication.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,34 +12,36 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@Valid @RequestBody UserRequest userDto) {
-        userService.create(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest) {
+        userService.create(userRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
     }
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAll());
+        List<UserResponse> users = userService.getAll();
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         Optional<UserResponse> userResponse = userService.getById(id);
         return userResponse.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest userDto) {
-        UserResponse updatedUser = userService.update(id, userDto);
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest) {
+        UserResponse updatedUser = userService.update(id, userRequest);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -55,5 +56,4 @@ public class UserController {
         userService.deleteById(id);
         return ResponseEntity.ok("User deleted successfully.");
     }
-
 }

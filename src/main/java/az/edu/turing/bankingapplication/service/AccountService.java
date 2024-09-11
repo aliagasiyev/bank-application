@@ -22,7 +22,7 @@ public class AccountService {
     private final UserRepository userRepository;
     private final AccountMapper accountMapper;
 
-    public AccountResponse createProfile(Long u_id, AccountRequest accountRequest) {
+    public AccountResponse createAccount(Long u_id, AccountRequest accountRequest) {
         UserEntity userEntity = userRepository.findById(u_id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + u_id));
 
@@ -33,7 +33,7 @@ public class AccountService {
         return accountMapper.toAccountDto(savedProfile);
     }
 
-    public Optional<AccountResponse> getProfile(Long u_id, Long a_id) {
+    public Optional<AccountResponse> getAccount(Long u_id, Long a_id) {
         UserEntity userEntity = userRepository.findById(u_id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + u_id));
 
@@ -47,8 +47,18 @@ public class AccountService {
         }
     }
 
-    public Optional<AccountResponse> updateProfile(Long u_id, Long a_id, AccountRequest accountDto) {
-        return Optional.empty();
+    public Optional<AccountResponse> updateAccount(Long userId, Long accountId, AccountRequest accountRequest) {
+        AccountEntity accountEntity = accountRepository.findById(accountId)
+                .filter(account -> account.getUser().getId().equals(userId))
+                .orElseThrow(() -> new RuntimeException("Account not found for the given user."));
+
+        accountEntity.setUsername(accountRequest.username());
+        accountEntity.setPassword(accountRequest.password());
+        accountEntity.setEmail(accountRequest.email());
+        accountEntity.setProfilePhoto(accountRequest.profilePhoto());
+
+        AccountEntity updatedAccount = accountRepository.save(accountEntity);
+        return Optional.of(accountMapper.toAccountDto(updatedAccount));
     }
 
     public void deleteAccount(Long a_id) {
