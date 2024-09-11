@@ -6,6 +6,7 @@ import az.edu.turing.bankingapplication.model.dto.response.AccountResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+
 import java.util.List;
 
 @Mapper(componentModel = "spring") // Use "spring" instead of "users"
