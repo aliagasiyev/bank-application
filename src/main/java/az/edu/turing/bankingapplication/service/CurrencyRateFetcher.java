@@ -23,7 +23,7 @@ public class CurrencyRateFetcher {
     private ObjectNode cachedRates;
     private LocalDateTime lastFetched;
 
-    private static final long CACHE_DURATION_MINUTES = 1; // Keşin yenilənmə müddəti
+    private static final long CACHE_DURATION_MINUTES = 1;
 
     public CurrencyRateFetcher(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
@@ -39,7 +39,7 @@ public class CurrencyRateFetcher {
         if (cachedRates == null || isCacheExpired()) {
             refreshRates();
         }
-        // JSON obyektini pretty print ilə qaytarın
+
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cachedRates);
     }
 
@@ -72,7 +72,7 @@ public class CurrencyRateFetcher {
         } catch (Exception e) {
             e.printStackTrace();
             cachedRates = objectMapper.createObjectNode();
-            cachedRates.put("error", "JSON çevrilməsi xətası");
+            cachedRates.put("error", "JSON conversion error!");
         }
     }
 }

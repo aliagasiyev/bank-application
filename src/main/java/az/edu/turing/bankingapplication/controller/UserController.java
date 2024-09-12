@@ -4,6 +4,8 @@ import az.edu.turing.bankingapplication.model.dto.request.UserRequest;
 import az.edu.turing.bankingapplication.model.dto.response.UserResponse;
 import az.edu.turing.bankingapplication.service.AccountService;
 import az.edu.turing.bankingapplication.service.UserService;
+import az.edu.turing.bankingapplication.service.impl.AccountServiceImpl;
+import az.edu.turing.bankingapplication.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

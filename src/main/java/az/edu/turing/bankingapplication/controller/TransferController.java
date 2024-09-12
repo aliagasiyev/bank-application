@@ -12,7 +12,7 @@
 //
 //    @PostMapping
 //    public ResponseEntity <TransferResponse> transferMoney (@RequestBody TransferRequest transferRequest){
-//        TransferResponse transferResponse = .createAccount(userId, accountRequest);
+//        TransferResponse transferResponse = (userId, accountRequest);
 //        return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
 //    }
 //}
