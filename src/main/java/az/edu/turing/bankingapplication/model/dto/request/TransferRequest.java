@@ -9,6 +9,5 @@ public class TransferRequest {
     private Long senderId;
     private Long recipientId;
     private BigDecimal amount;
-    private String currency;
     private String description;
 }

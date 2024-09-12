@@ -18,10 +18,6 @@ public class CurrencyController {
 
     @GetMapping("/rates")
     public String getCurrencyRates() throws JsonProcessingException {
-        String ratesJson = currencyRateFetcher.fetchRates();
-
-        System.out.println("Currency rates: " + ratesJson);
-
-        return ratesJson;
+        return currencyRateFetcher.fetchRates();
     }
 }

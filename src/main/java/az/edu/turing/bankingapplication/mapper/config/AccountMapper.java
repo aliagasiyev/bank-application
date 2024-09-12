@@ -9,13 +9,15 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring") 
+@Mapper(componentModel = "spring")
 public interface AccountMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "email", target = "email")
+    @Mapping(source ="bank",target="bank")
+    @Mapping(source="currency",target = "currency")
     @Mapping(target = "status", ignore = true)
     @Mapping(source = "profilePhoto", target = "profilePhoto")
     @Mapping(target = "user", ignore = true)

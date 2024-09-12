@@ -1,10 +1,14 @@
 package az.edu.turing.bankingapplication.domain.entity;
 
 import az.edu.turing.bankingapplication.enums.AccountStatus;
+import az.edu.turing.bankingapplication.enums.Bank;
+import az.edu.turing.bankingapplication.enums.Currency;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -26,9 +30,16 @@ public class AccountEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @OneToOne (cascade = CascadeType.ALL)
-    @JoinColumn (name = "budget_id", referencedColumnName = "id")
-    private BudgetEntity budget;
+    @Column (nullable = false)
+    @Enumerated (EnumType.STRING)
+    private Bank bank;
+
+    @Column (nullable = false)
+    @Enumerated (EnumType.STRING)
+    private Currency currency;
+
+    @Column
+    private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_status", nullable = false)
