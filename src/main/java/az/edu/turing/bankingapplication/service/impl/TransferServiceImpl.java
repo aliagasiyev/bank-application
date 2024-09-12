@@ -35,8 +35,10 @@ public class TransferServiceImpl implements TransferService {
     @Transactional
     public TransferResponse processTransfer(TransferRequest transferRequest) {
 
-        AccountEntity sender = accountRepository.findById(transferRequest.getSenderId()).orElseThrow(() -> new RuntimeException("Sender account not found"));
-        AccountEntity recipient = accountRepository.findById(transferRequest.getRecipientId()).orElseThrow(() -> new RuntimeException("Recipient account not found"));
+        AccountEntity sender = accountRepository.findById(transferRequest.getSenderId())
+                .orElseThrow(() -> new RuntimeException("Sender account not found"));
+        AccountEntity recipient = accountRepository.findById(transferRequest.getRecipientId())
+                .orElseThrow(() -> new RuntimeException("Recipient account not found"));
 
         BigDecimal amount = transferRequest.getAmount();
         Currency senderCurrency = sender.getCurrency();
@@ -44,10 +46,7 @@ public class TransferServiceImpl implements TransferService {
         Bank senderBank = sender.getBank();
         Bank recipientBank = recipient.getBank();
 
-
-        BigDecimal senderBalance = sender.getBalance();
-
-        if (senderBalance.compareTo(amount) < 0) {
+        if (sender.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException("You have insufficient funds for this transfer.");
         }
 
@@ -55,22 +54,37 @@ public class TransferServiceImpl implements TransferService {
 
         BigDecimal sendCommission = senderBank.getSendCommission();
         BigDecimal receiveCommission = recipientBank.getReceiptCommission();
-
         BigDecimal finalAmount = amount.multiply(sendCommission).multiply(receiveCommission);
+
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(currencyRate.fetchRates());
-            recipient.setBalance(recipient.getBalance().add(jsonNode.get(senderCurrency.toString()).decimalValue().divide(jsonNode.get(recipientCurrency.toString()).decimalValue(), 10, RoundingMode.HALF_UP).multiply(finalAmount)));
+
+            JsonNode senderRateNode = jsonNode.get(senderCurrency.toString());
+            JsonNode recipientRateNode = jsonNode.get(recipientCurrency.toString());
+
+            if (senderRateNode == null || recipientRateNode == null) {
+                throw new RuntimeException("Currency rate not found for sender or recipient.");
+            }
+
+            BigDecimal senderRate = new BigDecimal(senderRateNode.asText());
+            BigDecimal recipientRate = new BigDecimal(recipientRateNode.asText());
+
+            BigDecimal convertedAmount = senderRate
+                    .divide(recipientRate, 10, RoundingMode.HALF_UP)
+                    .multiply(finalAmount);
+
+            recipient.setBalance(recipient.getBalance().add(convertedAmount));
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Error processing currency rates.", e);
         }
 
         accountRepository.save(sender);
         accountRepository.save(recipient);
 
         TransferEntity transferEntity = transferMapper.toTransferEntity(transferRequest, sender, recipient);
-
         TransferEntity savedTransferEntity = transferRepository.save(transferEntity);
 
         return transferMapper.toTransferResponse(savedTransferEntity);

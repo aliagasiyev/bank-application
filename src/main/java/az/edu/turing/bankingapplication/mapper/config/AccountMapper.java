@@ -16,7 +16,7 @@ public interface AccountMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "email", target = "email")
-    @Mapping(target = "bank", ignore = true)
+    @Mapping(source = "bank", target = "bank")
     @Mapping(source = "currency",target = "currency")
     @Mapping(target = "balance", ignore = true)
     @Mapping(target = "status", ignore = true)
