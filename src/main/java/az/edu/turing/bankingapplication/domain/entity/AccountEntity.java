@@ -26,6 +26,10 @@ public class AccountEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @OneToOne (cascade = CascadeType.ALL)
+    @JoinColumn (name = "budget_id", referencedColumnName = "id")
+    private BudgetEntity budget;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "account_status", nullable = false)
     private AccountStatus status;
@@ -35,6 +39,6 @@ public class AccountEntity {
     private byte[] profilePhoto;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 }

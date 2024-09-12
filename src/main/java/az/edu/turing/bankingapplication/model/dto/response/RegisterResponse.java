@@ -5,7 +5,7 @@ import az.edu.turing.bankingapplication.enums.AccountStatus;
 import lombok.Builder;
 
 @Builder
-public record AccountResponse(
+public record RegisterResponse(
         Long id,
         String username,
         String password,

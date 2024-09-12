@@ -1,8 +1,8 @@
 package az.edu.turing.bankingapplication.mapper.config;
 
 import az.edu.turing.bankingapplication.domain.entity.AccountEntity;
-import az.edu.turing.bankingapplication.model.dto.request.AccountRequest;
-import az.edu.turing.bankingapplication.model.dto.response.AccountResponse;
+import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
+import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -19,11 +19,11 @@ public interface AccountMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(source = "profilePhoto", target = "profilePhoto")
     @Mapping(target = "user", ignore = true)
-    AccountEntity toAccountEntity(AccountRequest accountRequest);
+    AccountEntity toAccountEntity(RegisterRequest registerRequest);
 
-    AccountResponse toAccountDto(AccountEntity accountEntity);
+    RegisterResponse toAccountDto(AccountEntity accountEntity);
 
-    List<AccountEntity> listToAccountEntity(List<AccountRequest> accountRequest);
+    List<AccountEntity> listToAccountEntity(List<RegisterRequest> registerRequest);
 
-    List<AccountResponse> listToAccountDto(List<AccountEntity> accountEntity);
+    List<RegisterResponse> listToAccountDto(List<AccountEntity> accountEntity);
 }

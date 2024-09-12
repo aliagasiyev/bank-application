@@ -1,4 +1,5 @@
 package az.edu.turing.bankingapplication.enums;
 
-public class Currency {
+public enum Currency {
+    AZN, USD, EUR
 }

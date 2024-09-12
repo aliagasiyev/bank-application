@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/currency")
+@RequestMapping("/api/v1/currency")
 public class CurrencyController {
 
     private final CurrencyRateFetcher currencyRateFetcher;

@@ -1,7 +1,7 @@
 package az.edu.turing.bankingapplication.controller;
 
-import az.edu.turing.bankingapplication.model.dto.request.AccountRequest;
-import az.edu.turing.bankingapplication.model.dto.response.AccountResponse;
+import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
+import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import az.edu.turing.bankingapplication.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,28 +12,28 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/api/users/{userId}/accounts")
+@RequestMapping("/api/v1/users/{userId}/accounts")
 @RequiredArgsConstructor
 public class AccountController {
 
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<AccountResponse> createAccount(@PathVariable Long userId, @RequestBody AccountRequest accountRequest) {
-        AccountResponse accountResponse = accountService.createAccount(userId, accountRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
+    public ResponseEntity<RegisterResponse> createAccount(@PathVariable Long userId, @RequestBody RegisterRequest registerRequest) {
+        RegisterResponse registerResponse = accountService.createAccount(userId, registerRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registerResponse);
     }
 
     @GetMapping("/{accountId}")
-    public ResponseEntity<AccountResponse> getAccount(@PathVariable Long userId, @PathVariable Long accountId) {
-        Optional<AccountResponse> accountResponse = accountService.getAccount(userId, accountId);
-        return accountResponse.map(ResponseEntity::ok)
+    public ResponseEntity<RegisterResponse> getAccount(@PathVariable Long userId, @PathVariable Long accountId) {
+        Optional<RegisterResponse> registerResponse = accountService.getAccount(accountId);
+        return registerResponse.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     @PutMapping("/{accountId}")
-    public ResponseEntity<AccountResponse> updateAccount(@PathVariable Long userId, @PathVariable Long accountId, @RequestBody AccountRequest accountRequest) {
-        Optional<AccountResponse> updatedAccount = accountService.updateAccount(userId, accountId, accountRequest);
+    public ResponseEntity<RegisterResponse> updateAccount(@PathVariable Long accountId, @RequestBody RegisterRequest registerRequest) {
+        Optional<RegisterResponse> updatedAccount = accountService.updateAccount(accountId, registerRequest);
         return updatedAccount.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
