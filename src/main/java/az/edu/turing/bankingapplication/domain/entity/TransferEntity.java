@@ -21,7 +21,6 @@ public class TransferEntity {
     private BigDecimal amount;
     private Currency currency;
     private String description;
-    private String status;
     private LocalDateTime createdAt;
 
     @ManyToOne
