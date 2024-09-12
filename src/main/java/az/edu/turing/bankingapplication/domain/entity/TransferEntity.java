@@ -2,12 +2,15 @@ package az.edu.turing.bankingapplication.domain.entity;
 
 import az.edu.turing.bankingapplication.enums.Currency;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "transfer")
 public class TransferEntity {
@@ -15,21 +18,17 @@ public class TransferEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (name = "from_account", nullable = false)
-    private String fromAccount;
-
-    @Column (name = "to_account", nullable = false)
-    private String toAccount;
-
-    @Column (nullable = false)
     private BigDecimal amount;
-
-    @Column (nullable = false)
     private Currency currency;
-
-    @Column
     private String description;
+    private String status;
+    private LocalDateTime createdAt;
 
-    @Column
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "sender_account_id")
+    private AccountEntity sender;
+
+    @ManyToOne
+    @JoinColumn(name = "recipient_account_id")
+    private AccountEntity recipient;
 }

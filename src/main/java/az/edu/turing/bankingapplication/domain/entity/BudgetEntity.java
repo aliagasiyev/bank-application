@@ -11,30 +11,27 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-@Setter
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
-@Entity
-@Table (name = "budget")
+@AllArgsConstructor
+@Embeddable
 public class BudgetEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
-
     @ElementCollection
     @MapKeyEnumerated(EnumType.STRING)
-    @Column(name = "amount")
     private Map<Currency, BigDecimal> budgets = new HashMap<>();
 
     public BigDecimal getBudget(Currency currency) {
         return budgets.getOrDefault(currency, BigDecimal.ZERO);
     }
 
-    public void setBudget(Currency currency, BigDecimal amount) {
-        budgets.put(currency, amount);
+    public void subtractAmount(Currency currency, BigDecimal amount) {
+        BigDecimal currentAmount = getBudget(currency);
+        budgets.put(currency, currentAmount.subtract(amount));
+    }
+
+    public void addAmount(Currency currency, BigDecimal amount) {
+        BigDecimal currentAmount = getBudget(currency);
+        budgets.put(currency, currentAmount.add(amount));
     }
 }

@@ -1,21 +1,14 @@
 package az.edu.turing.bankingapplication.model.dto.request;
 
-import az.edu.turing.bankingapplication.enums.Currency;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class TransferRequest {
-    private String fromAccount;
-    private String toAccount;
+    private Long senderId;
+    private Long recipientId;
     private BigDecimal amount;
-    private Currency currency;
+    private String currency;
     private String description;
 }
