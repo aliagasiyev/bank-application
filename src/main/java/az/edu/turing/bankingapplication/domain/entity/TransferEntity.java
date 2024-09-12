@@ -19,7 +19,8 @@ public class TransferEntity {
     private Long id;
 
     private BigDecimal amount;
-    private Currency currency;
+    private Currency senderCurrency;
+    private Currency recipientCurrency;
     private String description;
     private LocalDateTime createdAt;
 

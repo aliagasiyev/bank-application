@@ -14,6 +14,10 @@ public interface TransferMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "sender", source = "sender")
     @Mapping(target = "recipient", source = "recipient")
+    @Mapping(target = "senderCurrency", source = "sender.currency")
+    @Mapping(target = "recipientCurrency", source = "recipient.currency")
+    @Mapping(target = "amount", source = "transferRequest.amount")
+    @Mapping(target = "description", source = "transferRequest.description")
     TransferEntity toTransferEntity(TransferRequest transferRequest, AccountEntity sender, AccountEntity recipient);
 
     TransferResponse toTransferResponse(TransferEntity transferEntity);
