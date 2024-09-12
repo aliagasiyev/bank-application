@@ -8,6 +8,6 @@ public record UserRequest (
 
     @NotBlank
     String pin
-){
-
+)
+{
 }

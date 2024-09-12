@@ -9,7 +9,6 @@ import az.edu.turing.bankingapplication.model.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

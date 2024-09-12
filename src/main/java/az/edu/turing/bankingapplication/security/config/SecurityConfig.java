@@ -20,21 +20,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().authenticated() 
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
-                .username("ali12")
-                .password("{noop}12345") 
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails user = User.builder()
+//                .username("ali12")
+//                .password("{noop}12345")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
 }
