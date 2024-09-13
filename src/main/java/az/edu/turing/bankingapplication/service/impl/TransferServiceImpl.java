@@ -16,11 +16,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransferServiceImpl implements TransferService {
@@ -29,16 +34,21 @@ public class TransferServiceImpl implements TransferService {
     private final AccountRepository accountRepository;
     private final TransferMapper transferMapper;
     private final CurrencyRateFetcher currencyRate;
+    private static final Logger logger = LoggerFactory.getLogger(TransferServiceImpl.class);
 
 
     @Override
     @Transactional
     public TransferResponse processTransfer(TransferRequest transferRequest) {
 
+        logger.info(String.valueOf(transferRequest.getSenderId()));
         AccountEntity sender = accountRepository.findById(transferRequest.getSenderId())
                 .orElseThrow(() -> new RuntimeException("Sender account not found"));
         AccountEntity recipient = accountRepository.findById(transferRequest.getRecipientId())
                 .orElseThrow(() -> new RuntimeException("Recipient account not found"));
+
+        logger.info("Sender ID{}", sender.getId());
+        logger.info("Recipient ID{}", recipient.getId());
 
         BigDecimal amount = transferRequest.getAmount();
         Currency senderCurrency = sender.getCurrency();
@@ -54,7 +64,8 @@ public class TransferServiceImpl implements TransferService {
 
         BigDecimal sendCommission = senderBank.getSendCommission();
         BigDecimal receiveCommission = recipientBank.getReceiptCommission();
-        BigDecimal finalAmount = amount.multiply(sendCommission).multiply(receiveCommission);
+        BigDecimal commission = amount.multiply(sendCommission).multiply(receiveCommission);
+        BigDecimal finalAmount = amount.subtract(commission);
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -67,8 +78,8 @@ public class TransferServiceImpl implements TransferService {
                 throw new RuntimeException("Currency rate not found for sender or recipient.");
             }
 
-            BigDecimal senderRate = new BigDecimal(senderRateNode.asText());
-            BigDecimal recipientRate = new BigDecimal(recipientRateNode.asText());
+            BigDecimal senderRate = new BigDecimal(senderRateNode.asText().replace(",", "."));
+            BigDecimal recipientRate = new BigDecimal(recipientRateNode.asText().replace(",", "."));
 
             BigDecimal convertedAmount = senderRate
                     .divide(recipientRate, 10, RoundingMode.HALF_UP)

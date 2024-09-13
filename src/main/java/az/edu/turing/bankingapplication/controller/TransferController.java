@@ -5,6 +5,7 @@ import az.edu.turing.bankingapplication.model.dto.response.TransferResponse;
 import az.edu.turing.bankingapplication.service.TransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class TransferController {
 
     private final TransferService transferService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity <TransferResponse> transferMoney (@RequestBody TransferRequest transferRequest){
         TransferResponse transferResponse = transferService.processTransfer(transferRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(transferResponse);
