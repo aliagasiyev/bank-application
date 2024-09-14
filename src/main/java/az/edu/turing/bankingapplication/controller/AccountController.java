@@ -3,7 +3,6 @@ package az.edu.turing.bankingapplication.controller;
 import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import az.edu.turing.bankingapplication.service.AccountService;
-import az.edu.turing.bankingapplication.service.impl.AccountServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
