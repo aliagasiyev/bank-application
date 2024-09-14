@@ -2,10 +2,7 @@ package az.edu.turing.bankingapplication.controller;
 
 import az.edu.turing.bankingapplication.model.dto.request.UserRequest;
 import az.edu.turing.bankingapplication.model.dto.response.UserResponse;
-import az.edu.turing.bankingapplication.service.AccountService;
 import az.edu.turing.bankingapplication.service.UserService;
-import az.edu.turing.bankingapplication.service.impl.AccountServiceImpl;
-import az.edu.turing.bankingapplication.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +30,10 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<Optional<UserResponse>> getUserById(@PathVariable Long id) {
         Optional<UserResponse> userResponse = userService.getById(id);
-        return userResponse.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+        return ResponseEntity.ok(userResponse);
     }
 
     @PutMapping("/{id}")
