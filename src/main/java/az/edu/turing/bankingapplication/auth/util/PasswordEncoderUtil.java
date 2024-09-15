@@ -1,4 +1,4 @@
-package az.edu.turing.bankingapplication.util;
+package az.edu.turing.bankingapplication.auth.util;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
