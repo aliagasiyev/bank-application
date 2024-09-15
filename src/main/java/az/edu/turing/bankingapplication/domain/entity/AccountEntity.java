@@ -1,5 +1,6 @@
 package az.edu.turing.bankingapplication.domain.entity;
 
+import az.edu.turing.bankingapplication.auth.model.enums.Role;
 import az.edu.turing.bankingapplication.enums.AccountStatus;
 import az.edu.turing.bankingapplication.enums.Bank;
 import az.edu.turing.bankingapplication.enums.Currency;
@@ -9,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -52,4 +55,19 @@ public class AccountEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
+
+    @Column(name = "is_account_non_expired")
+    private boolean accountNonExpired = true;
+
+    @Column(name = "is_account_non_locked")
+    private boolean accountNonLocked = true;
+
+    @Column(name = "is_credentials_non_expired")
+    private boolean credentialsNonExpired = true;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
 }
