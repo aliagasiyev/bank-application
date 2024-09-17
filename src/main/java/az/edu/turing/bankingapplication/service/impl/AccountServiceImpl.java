@@ -7,7 +7,7 @@ import az.edu.turing.bankingapplication.domain.repository.UserRepository;
 import az.edu.turing.bankingapplication.enums.AccountStatus;
 import az.edu.turing.bankingapplication.exception.UserNotFoundException;
 import az.edu.turing.bankingapplication.mapper.config.AccountMapper;
-import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
+import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import az.edu.turing.bankingapplication.service.AccountService;
 import lombok.RequiredArgsConstructor;

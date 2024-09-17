@@ -1,7 +1,7 @@
 package az.edu.turing.bankingapplication.mapper.config;
 
 import az.edu.turing.bankingapplication.domain.entity.AccountEntity;
-import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
+import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

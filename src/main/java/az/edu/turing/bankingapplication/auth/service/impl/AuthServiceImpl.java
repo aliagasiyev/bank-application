@@ -7,9 +7,10 @@ import az.edu.turing.bankingapplication.auth.security.JwtTokenProvider;
 import az.edu.turing.bankingapplication.auth.service.AuthService;
 import az.edu.turing.bankingapplication.domain.entity.AccountEntity;
 import az.edu.turing.bankingapplication.domain.repository.AccountRepository;
+import az.edu.turing.bankingapplication.enums.AccountStatus;
 import az.edu.turing.bankingapplication.mapper.config.AccountMapper;
 import az.edu.turing.bankingapplication.model.dto.request.LoginRequest;
-import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
+import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,12 +37,17 @@ public class AuthServiceImpl implements AuthService {
         if (accountRepository.existsByEmail(registerRequest.email())) {
             return ResponseEntity.badRequest().body(new AuthResponse("Email already exists"));
         }
-
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setUsername(registerRequest.username());
         accountEntity.setEmail(registerRequest.email());
         accountEntity.setPassword(passwordEncoderUtil.encode(registerRequest.password()));
         accountEntity.setRoles(Set.of(Role.USER));
+        accountEntity.setBank(registerRequest.bank()); // Ensure this value is non-null
+        accountEntity.setCurrency(registerRequest.currency());
+        accountEntity.setProfilePhoto(registerRequest.profilePhoto());
+
+        // Fix: Set account status to a default value, e.g., ACTIVATED
+        accountEntity.setStatus(AccountStatus.ACTIVATED); // Se
 
         accountRepository.save(accountEntity);
 

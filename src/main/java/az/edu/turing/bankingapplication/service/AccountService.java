@@ -1,6 +1,6 @@
 package az.edu.turing.bankingapplication.service;
 
-import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
+import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 
 import java.util.Optional;
