@@ -9,7 +9,6 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 
 public class AuthResponse {
 
@@ -17,6 +16,7 @@ public class AuthResponse {
     private String token;
     private String refreshToken;
     private Set<Role> roles;
+
 
 
     public AuthResponse(String message) {

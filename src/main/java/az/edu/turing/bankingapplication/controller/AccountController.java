@@ -1,6 +1,6 @@
 package az.edu.turing.bankingapplication.controller;
 
-import az.edu.turing.bankingapplication.model.dto.request.RegisterRequest;
+import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import az.edu.turing.bankingapplication.service.AccountService;
 import lombok.RequiredArgsConstructor;
