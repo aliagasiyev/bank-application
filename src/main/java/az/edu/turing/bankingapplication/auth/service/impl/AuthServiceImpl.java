@@ -87,10 +87,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<AuthResponse> refreshToken(String refreshToken) {
-        String newToken = jwtTokenProvider.refreshToken(refreshToken);
-
-        AuthResponse authResponse = new AuthResponse("Token refreshed", newToken);
+        AuthResponse authResponse = jwtTokenProvider.refreshToken(refreshToken);
         return ResponseEntity.ok(authResponse);
     }
+
+
 }
 

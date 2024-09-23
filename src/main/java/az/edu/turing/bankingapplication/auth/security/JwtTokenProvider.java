@@ -1,6 +1,7 @@
 package az.edu.turing.bankingapplication.auth.security;
 
 import az.edu.turing.bankingapplication.auth.model.enums.Role;
+import az.edu.turing.bankingapplication.auth.model.response.AuthResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,14 +83,21 @@ public class JwtTokenProvider {
         }
     }
 
-    public String refreshToken(String refreshToken) {
+    public AuthResponse refreshToken(String refreshToken) {
         if (!validateRefreshToken(refreshToken)) {
             throw new RuntimeException("Invalid refresh token: " + refreshToken);
         }
 
         String username = getUsername(refreshToken);
         Set<Role> roles = getRoles(refreshToken);
-        return createAccessToken(username, roles);
+
+        // Yeni access token yaradın
+        String newAccessToken = createAccessToken(username, roles);
+
+        // Yeni refresh token yaradın
+        String newRefreshToken = createRefreshToken(username, roles);
+
+        return new AuthResponse("Token refreshed", newAccessToken, newRefreshToken);
     }
 
     public String getUsername(String token) {

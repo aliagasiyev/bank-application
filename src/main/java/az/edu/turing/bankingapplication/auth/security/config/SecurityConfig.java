@@ -35,11 +35,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/{userId}/register", "/api/v1/auth/refresh","/api/v1/users", "/api/v1/auth/logout").permitAll()  // Open endpoints
+                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/{userId}/register", "/api/v1/auth/refresh","/api/v1/users", "/api/v1/auth/logout").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(unauthorizedHandler))  // Handle unauthorized access
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // Add JWT filter
+                        .authenticationEntryPoint(unauthorizedHandler))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

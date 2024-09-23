@@ -4,12 +4,8 @@ import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import az.edu.turing.bankingapplication.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/accounts")
@@ -20,16 +16,12 @@ public class AccountController {
 
     @GetMapping("/{accountId}")
     public ResponseEntity<RegisterResponse> getAccount(@PathVariable Long userId, @PathVariable Long accountId) {
-        Optional<RegisterResponse> registerResponse = accountService.getAccount(accountId);
-        return registerResponse.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+        return ResponseEntity.ok(accountService.getAccount(accountId).get());
     }
 
     @PutMapping("/{accountId}")
     public ResponseEntity<RegisterResponse> updateAccount(@PathVariable Long accountId, @RequestBody RegisterRequest registerRequest) {
-        Optional<RegisterResponse> updatedAccount = accountService.updateAccount(accountId, registerRequest);
-        return updatedAccount.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+        return ResponseEntity.ok(accountService.updateAccount(accountId, registerRequest).get());
     }
 
     @DeleteMapping("/{accountId}")

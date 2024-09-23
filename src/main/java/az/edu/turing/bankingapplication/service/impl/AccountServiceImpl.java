@@ -13,8 +13,7 @@ import az.edu.turing.bankingapplication.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -32,15 +31,14 @@ public class AccountServiceImpl implements AccountService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
-        // Convert Base64 profile photo to byte[]
         byte[] profilePhotoBytes = Base64.getDecoder().decode(registerRequest.profilePhoto());
 
 
         AccountEntity accountEntity = accountMapper.toAccountEntity(registerRequest);
         accountEntity.setUser(userEntity);
-        accountEntity.setPassword(passwordEncoder.encode(registerRequest.password()));  // Encode password
+        accountEntity.setPassword(passwordEncoder.encode(registerRequest.password()));
         accountEntity.setStatus(AccountStatus.ACTIVATED);
-        accountEntity.setProfilePhoto(profilePhotoBytes);  // Set profile photo bytes
+        accountEntity.setProfilePhoto(profilePhotoBytes);
 
         AccountEntity savedAccount = accountRepository.save(accountEntity);
         return accountMapper.toAccountDto(savedAccount);
@@ -48,8 +46,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Optional<RegisterResponse> getAccount(Long accountId) {
-        Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
-        return accountEntity.map(accountMapper::toAccountDto);
+        return accountRepository.findById(accountId)
+                .map(accountMapper::toAccountDto)
+                .or(() -> {
+                    try {
+                        throw new AccountNotFoundException("Account not found with id: " + accountId);
+                    } catch (AccountNotFoundException e) {
+                        throw new RuntimeException(e);}});
     }
 
     @Override
@@ -58,12 +61,11 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         accountEntity.setUsername(registerRequest.username());
-        accountEntity.setPassword(passwordEncoder.encode(registerRequest.password()));  // Encode password
+        accountEntity.setPassword(passwordEncoder.encode(registerRequest.password()));
         accountEntity.setEmail(registerRequest.email());
 
-        // Convert Base64 profile photo to byte[]
         byte[] profilePhotoBytes = Base64.getDecoder().decode(registerRequest.profilePhoto());
-        accountEntity.setProfilePhoto(profilePhotoBytes);  // Update profile photo bytes
+        accountEntity.setProfilePhoto(profilePhotoBytes);
 
         AccountEntity updatedAccount = accountRepository.save(accountEntity);
         return Optional.of(accountMapper.toAccountDto(updatedAccount));
