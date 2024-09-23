@@ -91,10 +91,8 @@ public class JwtTokenProvider {
         String username = getUsername(refreshToken);
         Set<Role> roles = getRoles(refreshToken);
 
-        // Yeni access token yaradın
         String newAccessToken = createAccessToken(username, roles);
 
-        // Yeni refresh token yaradın
         String newRefreshToken = createRefreshToken(username, roles);
 
         return new AuthResponse("Token refreshed", newAccessToken, newRefreshToken);
