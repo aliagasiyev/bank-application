@@ -4,10 +4,11 @@ import az.edu.turing.bankingapplication.auth.model.response.AuthResponse;
 import az.edu.turing.bankingapplication.auth.service.AuthService;
 import az.edu.turing.bankingapplication.model.dto.request.LoginRequest;
 import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
-import az.edu.turing.bankingapplication.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -15,13 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final AccountService accountService;
 
     @PostMapping("/{userId}/register")
     public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest registerRequest){
         return authService.registerUser(registerRequest);
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUser (@RequestBody LoginRequest loginRequest){
@@ -34,7 +33,9 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refreshToken (@RequestBody String refreshToken){
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
         return authService.refreshToken(refreshToken);
     }
+
 }

@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -30,10 +32,15 @@ public class AccountServiceImpl implements AccountService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
+        // Convert Base64 profile photo to byte[]
+        byte[] profilePhotoBytes = Base64.getDecoder().decode(registerRequest.profilePhoto());
+
+
         AccountEntity accountEntity = accountMapper.toAccountEntity(registerRequest);
         accountEntity.setUser(userEntity);
         accountEntity.setPassword(passwordEncoder.encode(registerRequest.password()));  // Encode password
         accountEntity.setStatus(AccountStatus.ACTIVATED);
+        accountEntity.setProfilePhoto(profilePhotoBytes);  // Set profile photo bytes
 
         AccountEntity savedAccount = accountRepository.save(accountEntity);
         return accountMapper.toAccountDto(savedAccount);
@@ -42,7 +49,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Optional<RegisterResponse> getAccount(Long accountId) {
         Optional<AccountEntity> accountEntity = accountRepository.findById(accountId);
-
         return accountEntity.map(accountMapper::toAccountDto);
     }
 
@@ -54,7 +60,10 @@ public class AccountServiceImpl implements AccountService {
         accountEntity.setUsername(registerRequest.username());
         accountEntity.setPassword(passwordEncoder.encode(registerRequest.password()));  // Encode password
         accountEntity.setEmail(registerRequest.email());
-        accountEntity.setProfilePhoto(registerRequest.profilePhoto());
+
+        // Convert Base64 profile photo to byte[]
+        byte[] profilePhotoBytes = Base64.getDecoder().decode(registerRequest.profilePhoto());
+        accountEntity.setProfilePhoto(profilePhotoBytes);  // Update profile photo bytes
 
         AccountEntity updatedAccount = accountRepository.save(accountEntity);
         return Optional.of(accountMapper.toAccountDto(updatedAccount));

@@ -1,4 +1,4 @@
-package az.edu.turing.bankingapplication.controller;
+package az.edu.turing.bankingapplication.auth.controller;
 
 import az.edu.turing.bankingapplication.model.dto.request.TransferRequest;
 import az.edu.turing.bankingapplication.model.dto.response.TransferResponse;
@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController

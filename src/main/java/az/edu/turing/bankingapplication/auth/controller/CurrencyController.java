@@ -1,4 +1,4 @@
-package az.edu.turing.bankingapplication.controller;
+package az.edu.turing.bankingapplication.auth.controller;
 
 import az.edu.turing.bankingapplication.service.CurrencyRateFetcher;
 import com.fasterxml.jackson.core.JsonProcessingException;

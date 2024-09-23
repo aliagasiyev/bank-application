@@ -10,7 +10,7 @@ public record RegisterRequest(
         @NotBlank String username,
         @NotBlank String password,
         @NotBlank @Email String email,
-        @NotNull byte[] profilePhoto, // Changed from @NotBlank to @NotNull
+        @NotNull byte[] profilePhoto,
         @NotNull Currency currency,
         @NotNull Bank bank
 ) {}

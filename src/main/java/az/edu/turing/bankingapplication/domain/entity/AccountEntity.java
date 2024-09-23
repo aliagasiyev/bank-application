@@ -48,7 +48,6 @@ public class AccountEntity {
     @Column(name = "account_status", nullable = false)
     private AccountStatus status;
 
-    @Lob
     @Column(name = "profile_photo", nullable = false)
     private byte[] profilePhoto;
 

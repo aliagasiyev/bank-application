@@ -42,12 +42,11 @@ public class AuthServiceImpl implements AuthService {
         accountEntity.setEmail(registerRequest.email());
         accountEntity.setPassword(passwordEncoderUtil.encode(registerRequest.password()));
         accountEntity.setRoles(Set.of(Role.USER));
-        accountEntity.setBank(registerRequest.bank()); // Ensure this value is non-null
+        accountEntity.setBank(registerRequest.bank());
         accountEntity.setCurrency(registerRequest.currency());
         accountEntity.setProfilePhoto(registerRequest.profilePhoto());
 
-        // Fix: Set account status to a default value, e.g., ACTIVATED
-        accountEntity.setStatus(AccountStatus.ACTIVATED); // Se
+        accountEntity.setStatus(AccountStatus.ACTIVATED);
 
         accountRepository.save(accountEntity);
 
@@ -63,17 +62,23 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<AuthResponse> loginUser(LoginRequest loginRequest) {
         AccountEntity accountEntity = accountRepository.findByUsername(loginRequest.username())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
+
         if (!passwordEncoderUtil.matches(loginRequest.password(), accountEntity.getPassword())) {
             return ResponseEntity.badRequest().body(new AuthResponse("Invalid credentials"));
         }
+
         String token = jwtTokenProvider.createAccessToken(accountEntity.getUsername(), accountEntity.getRoles());
         String refreshToken = jwtTokenProvider.createRefreshToken(accountEntity.getUsername(), accountEntity.getRoles());
 
-        RegisterResponse registerResponse = accountMapper.toAccountDto(accountEntity);
-        return ResponseEntity.ok(new AuthResponse("Account registered successfully", token, refreshToken, accountEntity.getRoles(), registerResponse));
+        RegisterResponse registerResponse = RegisterResponse.builder()
+                .id(accountEntity.getId())
+                .username(accountEntity.getUsername())
+                .email(accountEntity.getEmail())
+                .roles(accountEntity.getRoles())
 
+                .build();
+        return ResponseEntity.ok(new AuthResponse("Login successful", token, refreshToken, registerResponse));
     }
-
     @Override
     public ResponseEntity<AuthResponse> logoutUser() {
         AuthResponse authResponse = new AuthResponse("Logged out successfully");
