@@ -1,4 +1,4 @@
-package az.edu.turing.bankingapplication.controller;
+package az.edu.turing.bankingapplication.auth.controller;
 
 import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
@@ -17,12 +17,6 @@ import java.util.Optional;
 public class AccountController {
 
     private final AccountService accountService;
-
-    @PostMapping
-    public ResponseEntity<RegisterResponse> createAccount(@PathVariable Long userId, @RequestBody RegisterRequest registerRequest) {
-        RegisterResponse registerResponse = accountService.createAccount(userId, registerRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registerResponse);
-    }
 
     @GetMapping("/{accountId}")
     public ResponseEntity<RegisterResponse> getAccount(@PathVariable Long userId, @PathVariable Long accountId) {

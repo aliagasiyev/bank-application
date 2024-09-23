@@ -29,7 +29,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Set<GrantedAuthority> authorities = convertRolesToAuthorities(accountEntity.getRoles());
 
-
         return User.builder()
                 .username(accountEntity.getUsername())
                 .password(accountEntity.getPassword())
