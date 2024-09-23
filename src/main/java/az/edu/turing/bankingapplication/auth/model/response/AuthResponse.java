@@ -2,6 +2,7 @@ package az.edu.turing.bankingapplication.auth.model.response;
 
 import az.edu.turing.bankingapplication.auth.model.enums.Role;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class AuthResponse {
 
     private String message;
@@ -22,22 +24,23 @@ public class AuthResponse {
         this.message = message;
     }
 
-    public AuthResponse(String message, String newToken) {
-        this.message = message;
-        this.token = newToken;
-    }
-
-    public AuthResponse(String userRegisteredSuccessfully, String token, String refreshToken, Set<Role> roles, RegisterResponse registerResponse) {
-        this.message = userRegisteredSuccessfully;
-        this.token = token;
-        this.refreshToken = refreshToken;
-        this.roles = roles;
-    }
-
     public AuthResponse(String loginSuccessful, String token, String refreshToken, RegisterResponse registerResponse) {
         this.message = loginSuccessful;
         this.token = token;
         this.refreshToken = refreshToken;
         this.roles = new HashSet<>();
+    }
+    public AuthResponse(String message, String token, String refreshToken, Set<Role> roles, RegisterResponse registerResponse){
+        this.message = message;
+        this.token = token;
+        this.refreshToken = refreshToken;
+        this.roles = roles;
+        this.user = registerResponse;
+    }
+
+    public AuthResponse(String message, String token, String refreshToken) {
+        this.message = message;
+        this.token = token;
+        this.refreshToken = refreshToken;
     }
 }

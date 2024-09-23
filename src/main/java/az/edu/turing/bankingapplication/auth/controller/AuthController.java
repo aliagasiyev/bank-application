@@ -37,5 +37,4 @@ public class AuthController {
         String refreshToken = request.get("refreshToken");
         return authService.refreshToken(refreshToken);
     }
-
 }
