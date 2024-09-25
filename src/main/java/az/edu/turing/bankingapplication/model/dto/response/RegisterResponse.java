@@ -1,6 +1,5 @@
 package az.edu.turing.bankingapplication.model.dto.response;
 
-import az.edu.turing.bankingapplication.auth.model.enums.Role;
 import lombok.Builder;
 
 import java.util.Set;
@@ -9,6 +8,5 @@ import java.util.Set;
 public record RegisterResponse(
         Long id,
         String username,
-        String email,
-        Set<Role> roles
+        String email
 ) {}

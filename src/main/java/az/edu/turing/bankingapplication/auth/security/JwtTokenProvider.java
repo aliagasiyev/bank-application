@@ -1,17 +1,12 @@
 package az.edu.turing.bankingapplication.auth.security;
 
-import az.edu.turing.bankingapplication.auth.model.enums.Role;
 import az.edu.turing.bankingapplication.auth.model.response.AuthResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import io.jsonwebtoken.io.Decoders;
 
 @Component
@@ -29,10 +24,8 @@ public class JwtTokenProvider {
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
     }
 
-    public String createAccessToken(String username, Set<Role> roles) {
+    public String createAccessToken(String username) {
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", roles.stream().map(Enum::name).collect(Collectors.toList()));
-
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessTokenValidityInMilliseconds);
 
@@ -44,10 +37,8 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(String username, Set<Role> roles) {
+    public String createRefreshToken(String username) {
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", roles.stream().map(Enum::name).collect(Collectors.toList()));
-
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenValidityInMilliseconds);
 
@@ -89,11 +80,10 @@ public class JwtTokenProvider {
         }
 
         String username = getUsername(refreshToken);
-        Set<Role> roles = getRoles(refreshToken);
 
-        String newAccessToken = createAccessToken(username, roles);
+        String newAccessToken = createAccessToken(username);
 
-        String newRefreshToken = createRefreshToken(username, roles);
+        String newRefreshToken = createRefreshToken(username);
 
         return new AuthResponse("Token refreshed", newAccessToken, newRefreshToken);
     }
@@ -107,17 +97,4 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    @SuppressWarnings("unchecked")
-    public Set<Role> getRoles(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        List<String> rolesAsString = claims.get("roles", List.class);
-
-        return rolesAsString.stream()
-                .map(Role::valueOf)
-                .collect(Collectors.toSet());
-    }
 }

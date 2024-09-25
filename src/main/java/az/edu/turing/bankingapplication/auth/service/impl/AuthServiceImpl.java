@@ -1,7 +1,6 @@
 package az.edu.turing.bankingapplication.auth.service.impl;
 
 
-import az.edu.turing.bankingapplication.auth.model.enums.Role;
 import az.edu.turing.bankingapplication.auth.model.response.AuthResponse;
 import az.edu.turing.bankingapplication.auth.security.JwtTokenProvider;
 import az.edu.turing.bankingapplication.auth.service.AuthService;
@@ -17,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Set;
-
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -41,7 +38,6 @@ public class AuthServiceImpl implements AuthService {
         accountEntity.setUsername(registerRequest.username());
         accountEntity.setEmail(registerRequest.email());
         accountEntity.setPassword(passwordEncoderUtil.encode(registerRequest.password()));
-        accountEntity.setRoles(Set.of(Role.USER));
         accountEntity.setBank(registerRequest.bank());
         accountEntity.setCurrency(registerRequest.currency());
         accountEntity.setProfilePhoto(registerRequest.profilePhoto());
@@ -50,12 +46,12 @@ public class AuthServiceImpl implements AuthService {
 
         accountRepository.save(accountEntity);
 
-        String token = jwtTokenProvider.createAccessToken(accountEntity.getUsername(), accountEntity.getRoles());
-        String refreshToken = jwtTokenProvider.createRefreshToken(accountEntity.getUsername(), accountEntity.getRoles());
+        String token = jwtTokenProvider.createAccessToken(accountEntity.getUsername());
+        String refreshToken = jwtTokenProvider.createRefreshToken(accountEntity.getUsername());
 
         RegisterResponse registerResponse = accountMapper.toAccountDto(accountEntity);
 
-        return ResponseEntity.ok(new AuthResponse("Account registered successfully", token, refreshToken, accountEntity.getRoles(), registerResponse));
+        return ResponseEntity.ok(new AuthResponse("Account registered successfully", token, refreshToken, registerResponse));
     }
 
     @Override
@@ -67,15 +63,13 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.badRequest().body(new AuthResponse("Invalid credentials"));
         }
 
-        String token = jwtTokenProvider.createAccessToken(accountEntity.getUsername(), accountEntity.getRoles());
-        String refreshToken = jwtTokenProvider.createRefreshToken(accountEntity.getUsername(), accountEntity.getRoles());
+        String token = jwtTokenProvider.createAccessToken(accountEntity.getUsername());
+        String refreshToken = jwtTokenProvider.createRefreshToken(accountEntity.getUsername());
 
         RegisterResponse registerResponse = RegisterResponse.builder()
                 .id(accountEntity.getId())
                 .username(accountEntity.getUsername())
                 .email(accountEntity.getEmail())
-                .roles(accountEntity.getRoles())
-
                 .build();
         return ResponseEntity.ok(new AuthResponse("Login successful", token, refreshToken, registerResponse));
     }
