@@ -64,7 +64,6 @@ public class TransferServiceImpl implements TransferService {
     }
 
     private BigDecimal handleCurrencyConversionAndFees(AccountEntity sender, AccountEntity recipient, BigDecimal amount) {
-        // Calculate fees
         BigDecimal sendCommission = sender.getBank().getSendCommission();
         BigDecimal receiveCommission = recipient.getBank().getReceiptCommission();
         BigDecimal commission = amount.multiply(sendCommission).multiply(receiveCommission);
