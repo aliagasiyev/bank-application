@@ -20,5 +20,8 @@ public interface TransferMapper {
     @Mapping(target = "description", source = "transferRequest.description")
     TransferEntity toTransferEntity(TransferRequest transferRequest, AccountEntity sender, AccountEntity recipient);
 
+    // Add explicit mappings for senderName and recipientName
+    @Mapping(target = "senderName", source = "sender.username")
+    @Mapping(target = "recipientName", source = "recipient.username")
     TransferResponse toTransferResponse(TransferEntity transferEntity);
 }

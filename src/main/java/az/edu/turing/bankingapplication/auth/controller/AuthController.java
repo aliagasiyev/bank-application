@@ -4,6 +4,8 @@ import az.edu.turing.bankingapplication.auth.model.response.AuthResponse;
 import az.edu.turing.bankingapplication.auth.service.AuthService;
 import az.edu.turing.bankingapplication.model.dto.request.LoginRequest;
 import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
+import az.edu.turing.bankingapplication.model.dto.response.LoginResponse;
+import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +20,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/{userId}/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest registerRequest){
-        return authService.registerUser(registerRequest);
+    public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest registerRequest){
+        return authService.registerAccount(registerRequest);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> loginUser (@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> loginUser (@RequestBody LoginRequest loginRequest){
         return authService.loginUser(loginRequest);
     }
 

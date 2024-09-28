@@ -5,6 +5,8 @@ import az.edu.turing.bankingapplication.domain.entity.UserEntity;
 import az.edu.turing.bankingapplication.domain.repository.AccountRepository;
 import az.edu.turing.bankingapplication.domain.repository.UserRepository;
 import az.edu.turing.bankingapplication.enums.AccountStatus;
+import az.edu.turing.bankingapplication.exception.AccountNotFoundException;
+import az.edu.turing.bankingapplication.exception.DeactiveAccountException;
 import az.edu.turing.bankingapplication.exception.UserNotFoundException;
 import az.edu.turing.bankingapplication.mapper.config.AccountMapper;
 import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
@@ -13,7 +15,7 @@ import az.edu.turing.bankingapplication.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import javax.security.auth.login.AccountNotFoundException;
+
 import java.util.Base64;
 import java.util.Optional;
 
@@ -32,8 +34,6 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
         byte[] profilePhotoBytes = Base64.getDecoder().decode(registerRequest.profilePhoto());
-
-
         AccountEntity accountEntity = accountMapper.toAccountEntity(registerRequest);
         accountEntity.setUser(userEntity);
         accountEntity.setPassword(passwordEncoder.encode(registerRequest.password()));
@@ -46,13 +46,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Optional<RegisterResponse> getAccount(Long accountId) {
-        return accountRepository.findById(accountId)
-                .map(accountMapper::toAccountDto)
-                .or(() -> {
-                    try {
-                        throw new AccountNotFoundException("Account not found with id: " + accountId);
-                    } catch (AccountNotFoundException e) {
-                        throw new RuntimeException(e);}});
+        return Optional.ofNullable(accountRepository.findById(accountId)
+                .map(account -> {
+                    if (account.getStatus() == AccountStatus.DEACTIVATED) {
+                        throw new DeactiveAccountException("Deactivated account with id: " + accountId);
+                    }
+                    return accountMapper.toAccountDto(account);
+                })
+                .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + accountId)));
     }
 
     @Override
@@ -84,7 +85,6 @@ public class AccountServiceImpl implements AccountService {
     public void activateAccount(Long accountId) {
         AccountEntity accountEntity = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-
         accountEntity.setStatus(AccountStatus.ACTIVATED);
         accountRepository.save(accountEntity);
     }

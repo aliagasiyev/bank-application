@@ -1,7 +1,6 @@
 package az.edu.turing.bankingapplication.enums;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -9,7 +8,7 @@ import java.math.BigDecimal;
 public enum Bank {
     PASHA_BANK(new BigDecimal("0.02"), new BigDecimal("0.015")),
     KAPITAL_BANK(new BigDecimal("0.03"), new BigDecimal("0.02")),
-    UNIBANK(new BigDecimal("0.025"), new BigDecimal("0.018")),
+    UNIBANK(new BigDecimal("0.025"), new BigDecimal("0.03")),
     LEOBANK(new BigDecimal("0.0"), new BigDecimal("0.0"));
 
     private final BigDecimal sendCommission;

@@ -1,12 +1,20 @@
 package az.edu.turing.bankingapplication.model.dto.response;
 
-import lombok.Builder;
+import lombok.*;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
-public record LoginResponse(
+public class LoginResponse {
+    String message;
+    String username;
+    String email;
+    String accessToken;
+    String refreshToken;
 
-        String username,
-        String password,
-        String email
-) {
+    public LoginResponse(String message) {
+        this.message = message;
+    }
 }

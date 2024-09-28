@@ -39,7 +39,6 @@ public class CurrencyRateFetcher {
         if (cachedRates == null || isCacheExpired()) {
             refreshRates();
         }
-
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cachedRates);
     }
 

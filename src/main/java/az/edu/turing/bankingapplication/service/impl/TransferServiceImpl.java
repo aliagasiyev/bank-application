@@ -66,10 +66,11 @@ public class TransferServiceImpl implements TransferService {
     private BigDecimal handleCurrencyConversionAndFees(AccountEntity sender, AccountEntity recipient, BigDecimal amount) {
         BigDecimal sendCommission = sender.getBank().getSendCommission();
         BigDecimal receiveCommission = recipient.getBank().getReceiptCommission();
-        BigDecimal commission = amount.multiply(sendCommission).multiply(receiveCommission);
-        BigDecimal finalAmountAfterFees = amount.subtract(commission);
+        BigDecimal finalAmountAfterSendFee = amount.subtract(amount.multiply(sendCommission));
+        BigDecimal finalCommissionAfterReceiveFee = finalAmountAfterSendFee.subtract(finalAmountAfterSendFee.multiply(receiveCommission));
 
-        return convertCurrency(sender.getCurrency(), recipient.getCurrency(), finalAmountAfterFees);
+
+        return convertCurrency(sender.getCurrency(), recipient.getCurrency(), finalCommissionAfterReceiveFee);
     }
 
     private BigDecimal convertCurrency(Currency senderCurrency, Currency recipientCurrency, BigDecimal amount) {

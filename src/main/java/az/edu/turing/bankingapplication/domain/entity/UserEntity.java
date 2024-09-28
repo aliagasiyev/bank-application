@@ -2,11 +2,12 @@ package az.edu.turing.bankingapplication.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -25,5 +26,5 @@ public class UserEntity {
     private boolean enabled = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccountEntity> accounts;
+    private List<AccountEntity> accounts = new ArrayList<>();
 }

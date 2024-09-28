@@ -6,16 +6,19 @@ import az.edu.turing.bankingapplication.auth.security.JwtTokenProvider;
 import az.edu.turing.bankingapplication.auth.service.AuthService;
 import az.edu.turing.bankingapplication.domain.entity.AccountEntity;
 import az.edu.turing.bankingapplication.domain.repository.AccountRepository;
+import az.edu.turing.bankingapplication.domain.repository.UserRepository;
 import az.edu.turing.bankingapplication.enums.AccountStatus;
 import az.edu.turing.bankingapplication.mapper.config.AccountMapper;
 import az.edu.turing.bankingapplication.model.dto.request.LoginRequest;
 import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
+import az.edu.turing.bankingapplication.model.dto.response.LoginResponse;
 import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -27,12 +30,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public ResponseEntity<AuthResponse> registerUser(RegisterRequest registerRequest) {
+    public ResponseEntity<RegisterResponse> registerAccount(RegisterRequest registerRequest) {
         if (accountRepository.existsByUsername(registerRequest.username())) {
-            return ResponseEntity.badRequest().body(new AuthResponse("Username already exists"));
+            return ResponseEntity.badRequest().body(new RegisterResponse("Username already exists"));
         }
         if (accountRepository.existsByEmail(registerRequest.email())) {
-            return ResponseEntity.badRequest().body(new AuthResponse("Email already exists"));
+            return ResponseEntity.badRequest().body(new RegisterResponse("Email already exists"));
         }
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setUsername(registerRequest.username());
@@ -46,33 +49,36 @@ public class AuthServiceImpl implements AuthService {
 
         accountRepository.save(accountEntity);
 
-        String token = jwtTokenProvider.createAccessToken(accountEntity.getUsername());
-        String refreshToken = jwtTokenProvider.createRefreshToken(accountEntity.getUsername());
-
         RegisterResponse registerResponse = accountMapper.toAccountDto(accountEntity);
 
-        return ResponseEntity.ok(new AuthResponse("Account registered successfully", token, refreshToken, registerResponse));
+        return ResponseEntity.ok(new RegisterResponse("Account registered successfully", registerResponse));
     }
 
     @Override
-    public ResponseEntity<AuthResponse> loginUser(LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> loginUser(LoginRequest loginRequest) {
         AccountEntity accountEntity = accountRepository.findByUsername(loginRequest.username())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         if (!passwordEncoderUtil.matches(loginRequest.password(), accountEntity.getPassword())) {
-            return ResponseEntity.badRequest().body(new AuthResponse("Invalid credentials"));
+            return ResponseEntity.badRequest().body(new LoginResponse("Invalid credentials"));
         }
 
         String token = jwtTokenProvider.createAccessToken(accountEntity.getUsername());
         String refreshToken = jwtTokenProvider.createRefreshToken(accountEntity.getUsername());
 
-        RegisterResponse registerResponse = RegisterResponse.builder()
-                .id(accountEntity.getId())
+        LoginResponse loginResponse = LoginResponse.builder()
+                .message("Login successful")
                 .username(accountEntity.getUsername())
                 .email(accountEntity.getEmail())
+                .accessToken(token)
+                .refreshToken(refreshToken)
                 .build();
-        return ResponseEntity.ok(new AuthResponse("Login successful", token, refreshToken, registerResponse));
+
+        return ResponseEntity.ok(loginResponse);
     }
+
+
+
     @Override
     public ResponseEntity<AuthResponse> logoutUser() {
         AuthResponse authResponse = new AuthResponse("Logged out successfully");
