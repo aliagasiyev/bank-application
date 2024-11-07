@@ -16,8 +16,8 @@ public class RegisterResponse{
         String email;
 
 
-    public RegisterResponse(String accountRegisteredSuccessfully, RegisterResponse registerResponse) {
-        this.message = accountRegisteredSuccessfully;
+    public RegisterResponse(String message, RegisterResponse registerResponse) {
+        this.message = message;
         this.id = registerResponse.id;
         this.username = registerResponse.username;
         this.email = registerResponse.email;

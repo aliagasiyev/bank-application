@@ -44,14 +44,15 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountDto(savedAccount);
     }
 
-    @Override
     public Optional<RegisterResponse> getAccount(Long accountId) {
         return Optional.ofNullable(accountRepository.findById(accountId)
                 .map(account -> {
                     if (account.getStatus() == AccountStatus.DEACTIVATED) {
                         throw new DeactiveAccountException("Deactivated account with id: " + accountId);
                     }
-                    return accountMapper.toAccountDto(account);
+                    RegisterResponse response = accountMapper.toAccountDto(account);
+                    response.setMessage("Account retrieved successfully");
+                    return response;
                 })
                 .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + accountId)));
     }

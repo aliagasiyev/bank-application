@@ -20,10 +20,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/{userId}/register")
-    public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest registerRequest){
-        return authService.registerAccount(registerRequest);
+    public ResponseEntity<RegisterResponse> registerUser(
+            @PathVariable Long userId,
+            @RequestBody RegisterRequest registerRequest) {return authService.registerAccount(userId, registerRequest);
     }
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser (@RequestBody LoginRequest loginRequest){
         return authService.loginUser(loginRequest);

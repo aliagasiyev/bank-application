@@ -39,18 +39,36 @@ public class TransferServiceImpl implements TransferService {
         log.info("Processing transfer from sender ID {} to recipient ID {} for amount {}",
                 transferRequest.getSenderId(), transferRequest.getRecipientId(), transferRequest.getAmount());
 
+        if (transferRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Transfer amount must be greater than zero.");
+        }
+
         AccountEntity sender = fetchAccount(transferRequest.getSenderId(), "Sender account not found");
         AccountEntity recipient = fetchAccount(transferRequest.getRecipientId(), "Recipient account not found");
 
+        if (!sender.isAccountNonLocked()) {
+            throw new IllegalArgumentException("Sender account is deactivated, cannot send money.");
+        }
+        if (!recipient.isAccountNonLocked()) {
+            throw new IllegalArgumentException("Recipient account is deactivated, cannot receive money.");
+        }
+
+        // Validate sufficient balance
         validateSufficientBalance(sender, transferRequest.getAmount());
 
+        // Handle currency conversion and fees
         BigDecimal finalConvertedAmount = handleCurrencyConversionAndFees(sender, recipient, transferRequest.getAmount());
 
+        // Update account balances
         updateAccountBalances(sender, recipient, transferRequest.getAmount(), finalConvertedAmount);
 
+        log.info("Transfer successful. Sender balance: {}, Recipient balance: {}", sender.getBalance(), recipient.getBalance());
+
+        // Save transfer details
         TransferEntity transferEntity = saveTransferDetails(transferRequest, sender, recipient);
         return transferMapper.toTransferResponse(transferEntity);
     }
+
 
     private AccountEntity fetchAccount(Long accountId, String errorMessage) {
         return accountRepository.findById(accountId)

@@ -5,9 +5,11 @@ import az.edu.turing.bankingapplication.auth.model.response.AuthResponse;
 import az.edu.turing.bankingapplication.auth.security.JwtTokenProvider;
 import az.edu.turing.bankingapplication.auth.service.AuthService;
 import az.edu.turing.bankingapplication.domain.entity.AccountEntity;
+import az.edu.turing.bankingapplication.domain.entity.UserEntity;
 import az.edu.turing.bankingapplication.domain.repository.AccountRepository;
 import az.edu.turing.bankingapplication.domain.repository.UserRepository;
 import az.edu.turing.bankingapplication.enums.AccountStatus;
+import az.edu.turing.bankingapplication.exception.AccountNotFoundException;
 import az.edu.turing.bankingapplication.mapper.config.AccountMapper;
 import az.edu.turing.bankingapplication.model.dto.request.LoginRequest;
 import az.edu.turing.bankingapplication.auth.model.request.RegisterRequest;
@@ -27,16 +29,22 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final UserRepository userRepository;
+
 
     @Transactional
     @Override
-    public ResponseEntity<RegisterResponse> registerAccount(RegisterRequest registerRequest) {
+    public ResponseEntity<RegisterResponse> registerAccount(Long userId, RegisterRequest registerRequest) {
         if (accountRepository.existsByUsername(registerRequest.username())) {
             return ResponseEntity.badRequest().body(new RegisterResponse("Username already exists"));
         }
         if (accountRepository.existsByEmail(registerRequest.email())) {
             return ResponseEntity.badRequest().body(new RegisterResponse("Email already exists"));
         }
+
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new AccountNotFoundException("User not found"));
+
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setUsername(registerRequest.username());
         accountEntity.setEmail(registerRequest.email());
@@ -44,8 +52,8 @@ public class AuthServiceImpl implements AuthService {
         accountEntity.setBank(registerRequest.bank());
         accountEntity.setCurrency(registerRequest.currency());
         accountEntity.setProfilePhoto(registerRequest.profilePhoto());
-
         accountEntity.setStatus(AccountStatus.ACTIVATED);
+        accountEntity.setUser(user);
 
         accountRepository.save(accountEntity);
 

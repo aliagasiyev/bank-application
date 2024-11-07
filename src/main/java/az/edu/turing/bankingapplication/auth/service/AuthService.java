@@ -8,7 +8,7 @@ import az.edu.turing.bankingapplication.model.dto.response.RegisterResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    ResponseEntity<RegisterResponse> registerAccount(RegisterRequest registerRequest);
+    ResponseEntity<RegisterResponse> registerAccount(Long userId, RegisterRequest registerRequest);
 
     ResponseEntity<LoginResponse> loginUser(LoginRequest loginRequest);
 
